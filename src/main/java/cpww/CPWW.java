@@ -51,7 +51,7 @@ public class CPWW {
     public CPWW()  {
     }
 
-    private static void initialization() throws Exception {
+    private static void initialization(String data_name) throws Exception {
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,parse,depparse");
         pipeline = new StanfordCoreNLP(props);
@@ -59,12 +59,13 @@ public class CPWW {
         InputStream input = new FileInputStream("config.properties");
         Properties prop = new Properties();
         prop.load(input);
-        if (!prop.containsKey("data_name") || prop.getProperty("data_name").equals("")) {
-            throw new IOException("Parameter 'data_name' <does not exist/ is empty> in config.properties");
-        }
+        //if (!prop.containsKey("data_name") || prop.getProperty("data_name").equals("")) {
+            //throw new IOException("Parameter 'data_name' <does not exist/ is empty> in config.properties");
+        //}
         setOptionalParameterDefaults(prop);
-        data_name = prop.getProperty("data_name");
+        //data_name = prop.getProperty("data_name");
         inputFolder = folderNameConsistency(prop.getProperty("inputFolder"));
+        System.out.println(inputFolder);
         outputFolder = folderNameConsistency(prop.getProperty("outputFolder"));
         noOfLines = Integer.parseInt(prop.getProperty("noOfLines"));
         minimumSupport = Integer.parseInt(prop.getProperty("minimumSupport"));
@@ -458,7 +459,8 @@ public class CPWW {
     private static void saveSentenceBreakdown(int batchIterNo, List<SentenceProcessor> sentenceCollector, int tempIter) throws Exception {
         logger.log(Level.INFO, "STARTING: Sentence Breakdown Serialization for batch " + batchIterNo);
         String directory = inputFolder + "ProcessedInput/" + batchSize + "/";
-        String prefix = tempIter == -1 ? "sentenceBatch"  + batchIterNo + "." + noOfLines : "t" + batchIterNo + tempIter;
+        //String prefix = tempIter == -1 ? "sentenceBatch"  + "." + noOfLines : "t" + tempIter;
+        String prefix = "sentenceBatch" + "." + noOfLines;
         File file = new File(directory + prefix + ".txt");
         FileOutputStream fileOut = new FileOutputStream(file);
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -474,7 +476,8 @@ public class CPWW {
     private static List<SentenceProcessor> loadSentenceBreakdown(int batchIterNo, int tempIter) throws Exception {
         logger.log(Level.INFO, "STARTING: Sentence Breakdown Deserialization for batch " + batchIterNo);
         String directory = inputFolder + "ProcessedInput/" + batchSize + "/";
-        String prefix = tempIter == -1 ? "sentenceBatch" + batchIterNo + "." + noOfLines : "t" + batchIterNo + tempIter;
+        //String prefix = tempIter == -1 ? "sentenceBatch" + "." + noOfLines : "t" + tempIter;
+        String prefix = "sentenceBatch" + "." + noOfLines;
         FileInputStream fileIn = new FileInputStream( directory + prefix + ".txt");
         ObjectInputStream in = new ObjectInputStream(fileIn);
         List<SentenceProcessor> sentenceCollector = (List<SentenceProcessor>) in.readObject();
@@ -484,15 +487,15 @@ public class CPWW {
         return sentenceCollector;
     }
 
-    private static void savePatternClassificationData() throws IOException{
+    private static void savePatternClassificationData(String data_name) throws IOException{
         logger.log(Level.INFO, "STARTING: Saving Meta-Pattern Classification Data");
         String suffix = "." + noOfLines + "_" + minimumSupport + ".txt";
-        FileWriter singlePatterns = new FileWriter(outputFolder + "singlePatterns" + suffix);
-        FileWriter multiPatterns = new FileWriter(outputFolder + "multiPatterns" + suffix);
-        FileWriter allPatterns = new FileWriter(outputFolder + "allPatterns" + suffix);
-        writePatternsToFile(new BufferedWriter(singlePatterns), singlePattern);
+        //FileWriter singlePatterns = new FileWriter(outputFolder + "singlePatterns" + suffix);
+        FileWriter multiPatterns = new FileWriter(outputFolder + data_name + "_multiPatterns" + suffix);
+        //FileWriter allPatterns = new FileWriter(outputFolder + "allPatterns" + suffix);
+        //writePatternsToFile(new BufferedWriter(singlePatterns), singlePattern);
         writePatternsToFile(new BufferedWriter(multiPatterns), multiPattern);
-        writePatternsToFile(new BufferedWriter(allPatterns), allPattern);
+        //writePatternsToFile(new BufferedWriter(allPatterns), allPattern);
         logger.log(Level.INFO, "COMPLETED: Saving Meta-Pattern Classification Data");
     }
 
@@ -586,11 +589,11 @@ public class CPWW {
         return out.isEmpty() ? null : out;
     }
 
-    private static void savePatternMatchingResults(List<Map<String, Integer>> patternList) throws Exception{
+    private static void savePatternMatchingResults(List<Map<String, Integer>> patternList, String data_name) throws Exception{
         logger.log(Level.INFO, "STARTING: Pattern Matching");
         String outputDirectory = outputFolder;
         String suffix = "." + noOfLines + "_" + minimumSupport + ".txt";
-        BufferedWriter patternOutput = new BufferedWriter(new FileWriter(outputDirectory + "patternOutput" + suffix));
+        BufferedWriter patternOutput = new BufferedWriter(new FileWriter(outputDirectory + data_name + "_patternOutput" + suffix));
         for (int batchNo = 0; batchNo < noOfBatches; batchNo++) {
             List<SentenceProcessor> sentenceCollectorBatch = loadSentenceBreakdown(batchNo, noOfPushUps + 1);
             String[] outputArray = new String[sentenceCollectorBatch.size()];
@@ -621,9 +624,9 @@ public class CPWW {
         logger.log(Level.INFO, "COMPLETED: Pattern Matching");
     }
 
-    public static void call() {
+    public static void call(String data_name) {
         try {
-            initialization();
+            initialization(data_name);
             if (!load_sentenceBreakdownData) {
                 buildDictionary();
                 buildSentences();
@@ -654,10 +657,10 @@ public class CPWW {
                 if (!load_metapatternData) frequent_pattern_mining(iterations);
             }
             if (iterations <= noOfPushUps) noOfPushUps = iterations - 1;
-            savePatternClassificationData();
+            savePatternClassificationData(data_name);
             patternList.add(returnSortedPatternList(multiPattern));
             if (includeContext) patternList.add(returnSortedPatternList(singlePattern));
-            savePatternMatchingResults(patternList);
+            savePatternMatchingResults(patternList,data_name);
         } catch (Exception e) {
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
