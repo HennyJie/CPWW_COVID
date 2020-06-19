@@ -1,13 +1,14 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cpww.CPWW;
 import edu.stanford.nlp.pipeline.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class NERAnnotation {
+public class NERAnnotation_test {
 
-    public static void main(String[] args) throws IOException {
+    public static void Ann(String filename) throws IOException {
         // set up pipeline properties
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
@@ -41,9 +42,10 @@ public class NERAnnotation {
         // set up pipeline
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         // make an example document
-        BufferedReader br = new BufferedReader(new FileReader("Data/425_1pr9q0ww/425_1pr9q0ww.txt"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("Data/425_1pr9q0ww/annotated.txt"));
-        BufferedWriter bw1 = new BufferedWriter(new FileWriter("Data/425_1pr9q0ww/entityTypes.txt"));
+        //BufferedReader br = new BufferedReader(new FileReader("Data/425_1pr9q0ww/425_1pr9q0ww.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("Data/docs/" + filename));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Data/mid_output/annotated.txt"));
+        BufferedWriter bw1 = new BufferedWriter(new FileWriter("Data/mid_output/entityTypes.txt"));
         Set<String> entityTypes = new HashSet<>();
         Map<String, String> map = new HashMap<>();
         int globalNER = 0;
@@ -98,16 +100,25 @@ public class NERAnnotation {
         br.close();
         bw.close();
         String json = new ObjectMapper().writeValueAsString(map);
-        try (FileWriter file = new FileWriter("Data/425_1pr9q0ww/" + "dict.json")) {
+        try (FileWriter file = new FileWriter("Data/mid_output/dict.json")) {
             file.write(json);
         } catch (Exception e) {
             e.printStackTrace();
         }
         for (String entity : entityTypes) {
-            bw1.write(entity + "\n");
+            String a = new String("O");
+            if(!entity.equalsIgnoreCase(a)) {
+                bw1.write(entity + "\n");
+            }
         }
         bw1.close();
 
     }
 
+    public static void main(String[] args) {
+
+
+    }
+
 }
+
