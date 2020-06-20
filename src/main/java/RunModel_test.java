@@ -6,7 +6,8 @@ import java.io.IOException;
 
 public class RunModel_test {
     public static void main(String[] args) throws IOException {
-        File file = new File("/Users/yaoge/Developer/CPWW_COVID/Data/docs");
+//        File file = new File("/Users/hejiecui/Developer/Research/CPWW/Data/docs");
+        File file = new File("/Users/hejiecui/Developer/Research/TREC-COVID/cord-rnd3/sub10_periods_split");
         String[] filelist = file.list();
         for (int i = 0; i < filelist.length; i++) {
             //System.out.println(filelist[i]);

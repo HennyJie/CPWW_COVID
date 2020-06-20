@@ -43,7 +43,8 @@ public class NERAnnotation_test {
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         // make an example document
         //BufferedReader br = new BufferedReader(new FileReader("Data/425_1pr9q0ww/425_1pr9q0ww.txt"));
-        BufferedReader br = new BufferedReader(new FileReader("Data/docs/" + filename));
+//        BufferedReader br = new BufferedReader(new FileReader("Data/docs/" + filename));
+        BufferedReader br = new BufferedReader(new FileReader("/Users/hejiecui/Developer/Research/TREC-COVID/cord-rnd3/sub10_periods_split/" + filename));
         BufferedWriter bw = new BufferedWriter(new FileWriter("Data/mid_output/annotated.txt"));
         BufferedWriter bw1 = new BufferedWriter(new FileWriter("Data/mid_output/entityTypes.txt"));
         Set<String> entityTypes = new HashSet<>();
