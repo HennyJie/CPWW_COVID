@@ -489,13 +489,17 @@ public class CPWW {
 
     private static void savePatternClassificationData(String data_name) throws IOException{
 //        logger.log(Level.INFO, "STARTING: Saving Meta-Pattern Classification Data");
-        String suffix = "." + noOfLines + "_" + minimumSupport + ".txt";
-        //FileWriter singlePatterns = new FileWriter(outputFolder + "singlePatterns" + suffix);
-        FileWriter multiPatterns = new FileWriter(outputFolder + data_name + "_multiPatterns" + suffix);
-        //FileWriter allPatterns = new FileWriter(outputFolder + "allPatterns" + suffix);
-        //writePatternsToFile(new BufferedWriter(singlePatterns), singlePattern);
-        writePatternsToFile(new BufferedWriter(multiPatterns), multiPattern);
-        //writePatternsToFile(new BufferedWriter(allPatterns), allPattern);
+//        String suffix = "." + noOfLines + "_" + minimumSupport + ".txt";
+//        FileWriter singlePatterns = new FileWriter(outputFolder + "singlePatterns" + suffix);
+//
+//        String[] data_name_text_all = data_name.split(".");
+//        String data_name_text = data_name_text_all[0];
+//        FileWriter multiPatterns = new FileWriter(outputFolder + data_name + "_multiPatterns" + suffix);
+//
+//        FileWriter allPatterns = new FileWriter(outputFolder + "allPatterns" + suffix);
+//        writePatternsToFile(new BufferedWriter(singlePatterns), singlePattern);
+//        writePatternsToFile(new BufferedWriter(multiPatterns), multiPattern);
+//        writePatternsToFile(new BufferedWriter(allPatterns), allPattern);
 //        logger.log(Level.INFO, "COMPLETED: Saving Meta-Pattern Classification Data");
     }
 
@@ -593,6 +597,8 @@ public class CPWW {
 //        logger.log(Level.INFO, "STARTING: Pattern Matching");
         String outputDirectory = outputFolder;
         String suffix = "." + noOfLines + "_" + minimumSupport + ".txt";
+//        String[] data_name_text_all = data_name.split(".");
+//        String data_name_text = data_name_text_all[0];
         BufferedWriter patternOutput = new BufferedWriter(new FileWriter(outputDirectory + data_name + "_patternOutput" + suffix));
 //        for (int batchNo = 0; batchNo < noOfBatches; batchNo++) {
 //            List<SentenceProcessor> sentenceCollectorBatch = loadSentenceBreakdown(batchNo, noOfPushUps + 1);
