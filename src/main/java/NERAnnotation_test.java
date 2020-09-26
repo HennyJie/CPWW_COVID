@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class NERAnnotation_test {
 
-    public static void Ann(String filename) throws IOException {
+    public static void Ann(String folder, String filename, String out_folder) throws IOException {
         // set up pipeline properties
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
@@ -44,9 +44,10 @@ public class NERAnnotation_test {
         // make an example document
         //BufferedReader br = new BufferedReader(new FileReader("Data/425_1pr9q0ww/425_1pr9q0ww.txt"));
 //        BufferedReader br = new BufferedReader(new FileReader("Data/docs/" + filename));
-        BufferedReader br = new BufferedReader(new FileReader("/Users/hejiecui/Developer/Research/TREC-COVID/cord-rnd3/sub10_periods_split/" + filename));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("Data/mid_output/annotated.txt"));
-        BufferedWriter bw1 = new BufferedWriter(new FileWriter("Data/mid_output/entityTypes.txt"));
+//        BufferedReader br = new BufferedReader(new FileReader("/Users/hejiecui/Developer/Research/TREC-COVID/cord-rnd3/sub10_periods_split/" + filename));
+        BufferedReader br = new BufferedReader(new FileReader(folder + '/' + filename));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Data/sub_mid_output/" + out_folder + "/annotated.txt"));
+        BufferedWriter bw1 = new BufferedWriter(new FileWriter("Data/sub_mid_output/" + out_folder +"/entityTypes.txt"));
         Set<String> entityTypes = new HashSet<>();
         Map<String, String> map = new HashMap<>();
         int globalNER = 0;
@@ -101,7 +102,7 @@ public class NERAnnotation_test {
         br.close();
         bw.close();
         String json = new ObjectMapper().writeValueAsString(map);
-        try (FileWriter file = new FileWriter("Data/mid_output/dict.json")) {
+        try (FileWriter file = new FileWriter("Data/sub_mid_output/" + out_folder + "/dict.json")) {
             file.write(json);
         } catch (Exception e) {
             e.printStackTrace();

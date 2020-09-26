@@ -21,3 +21,6 @@ target/classes/cpww/SentenceProcessor.class
 target/classes/cpww/SubSentWords.class
 OriginalData/*
 *.project
+CPWW.jar
+src/META-INF/
+src/main/java/META-INF/
